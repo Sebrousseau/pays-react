@@ -7,6 +7,8 @@ const Countries = () => {
   const[sortedData, setSortedData] = useState([])
   const[playOnce, setPlayOnce] = useState(true)
   const[range, setRange] = useState(40)
+  const[selectedRegion, setSelectedRegion] = useState('')
+  const regions = ['Asia', 'Africa', 'Europe', 'Americas', 'Oceania']
 
   useEffect(() => {
     if (playOnce) {
@@ -33,9 +35,24 @@ const Countries = () => {
     <div className="countries">
       <div className="sort-container">
         <input type="range" min='0' max='250' value={range} onChange={(e) => setRange(e.target.value)} />
+        <ul>
+          {regions.map((region) => {
+            return(
+              <li key={region}>
+                <input type="radio" id={region} value={region} checked={region == selectedRegion} onChange={(e) => setSelectedRegion(e.target.value)}/>
+                <label htmlFor={region}>{region}</label>
+              </li>
+            )
+          })}
+        </ul>
       </div>
+        <div className="cancel">
+          {selectedRegion && <h5 onClick={() => setSelectedRegion('')}>Annuler la recherche</h5>}
+        </div>
         <ul className="countries-list">
-        {sortedData.map((country) => (
+        {sortedData
+        .filter((country) => (country.region.includes(selectedRegion)))
+        .map((country) => (
           <Card country={country} key={country.name.common}/>
         ))}
         </ul>
